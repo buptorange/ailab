@@ -35,7 +35,7 @@ class UpScalerMT(threading.Thread):
                 break
             self.res_q.put(self.inference(tmp))
 class VideoRealWaifuUpScaler(object):
-    def __init__(self,nt,n_gpu,scale,half,tile,cache_mode,p_sleep,decode_sleep,encode_params):
+    def __init__(self,nt,n_gpu,scale,half,tile,p_sleep, decode_sleep,encode_params, cache_mode):
         self.nt = nt
         self.n_gpu = n_gpu  # 每块GPU开nt个进程
         self.scale = scale
@@ -69,7 +69,7 @@ class VideoRealWaifuUpScaler(object):
         t0 = ttime()
         for idx, frame in enumerate(objVideoreader.iter_frames()):
             # print(1,idx, self.inp_q.qsize(), self.res_q.qsize(), now_idx, sorted(idx2res.keys()))  ##
-            if(idx%10==0):
+            if(idx%100==0):
                 print("total frame:%s\tdecoded frames:%s"%(int(total_frame),idx))  ##
             self.inp_q.put((idx, frame))
             sleep(self.decode_sleep)#否则解帧会一直抢主进程的CPU到100%，不给其他线程CPU空间进行图像预处理和后处理
